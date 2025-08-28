@@ -240,7 +240,7 @@ export class Neo4j implements INodeType {
 					},
 				},
 				default: '',
-				description: 'The Cypher query to execute',
+				description: 'The Cypher query to execute. Multiple queries can be separated by semicolons (;) and will be executed sequentially.',
 			},
 			{
 				displayName: 'Node Label',
@@ -352,9 +352,33 @@ export class Neo4j implements INodeType {
 
 					if (operation === 'executeQuery') {
 						const cypherQuery = this.getNodeParameter('cypherQuery', 0) as string;
-						const result = await graph.query(cypherQuery);
-						console.log(result);
-						return [this.helpers.returnJsonArray(result)];
+						
+						// Split query by semicolons and filter out empty parts
+						const queryParts = cypherQuery
+							.split(';')
+							.map(part => part.trim())
+							.filter(part => part.length > 0);
+						
+						// If no valid query parts, return empty result
+						if (queryParts.length === 0) {
+							return [this.helpers.returnJsonArray([])];
+						}
+						
+						// Execute each query part sequentially and collect results
+						const allResults: any[] = [];
+						for (const queryPart of queryParts) {
+							const result = await graph.query(queryPart);
+							console.log(`Query: ${queryPart}`);
+							console.log('Result:', result);
+							// Add results from this query to the combined results
+							if (Array.isArray(result)) {
+								allResults.push(...result);
+							} else {
+								allResults.push(result);
+							}
+						}
+						
+						return [this.helpers.returnJsonArray(allResults)];
 					}
 
 					if (operation === 'createNode') {
