@@ -22,7 +22,7 @@ This is an n8n community node for Neo4j integration with LangChain support. It p
   - Add Texts: Add new texts to the vector store
 
 - Graph Database Operations:
-  - Execute Query: Run custom Cypher queries
+  - Execute Query: Run custom Cypher queries (supports multiple queries separated by semicolons)
   - Create Node: Create new nodes with labels and properties
   - Create Relationship: (Coming soon) Create relationships between nodes
 
@@ -51,7 +51,7 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 #### Execute Query
 1. Select "Graph Database" as the resource
 2. Choose "Execute Query" operation
-3. Enter your Cypher query
+3. Enter your Cypher query (multiple queries can be separated by semicolons for sequential execution)
 4. Execute to run the query
 
 #### Create Node
